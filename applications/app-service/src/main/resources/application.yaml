@@ -1,14 +1,30 @@
-##Spring Configuration
 server:
   port: 8080
 spring:
   application:
-    name: books
+    name: "books"
   devtools:
     add-properties: false
   h2:
     console:
       enabled: true
-      path: /h2
+      path: "/h2"
   profiles:
-    include:
+    include: null
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/library"
+    username: "adminbd"
+    password: "pwd2024*"
+    driverClassName: "org.postgresql.Driver"
+    platform: postgres
+  jpa:
+    databasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
