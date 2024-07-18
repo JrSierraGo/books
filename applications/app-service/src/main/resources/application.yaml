@@ -16,7 +16,7 @@ spring:
     username: "adminbd"
     password: "pwd2024*"
     driverClassName: "org.postgresql.Driver"
-    platform: postgres
+    platform: "postgres"
   jpa:
     databasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
 management:
@@ -28,3 +28,7 @@ management:
     health:
       probes:
         enabled: true
+adapter:
+  restconsumer:
+    timeout: 5000
+    url: "http://localhost:8080"

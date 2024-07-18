@@ -16,6 +16,10 @@ public class Book {
     private String subtitle;
     private String authors;
     private String description;
-    private long pageCount;
-    private String textSnippet;
+    private Long publishDate;
+    private String snippet;
+    private Integer pageCount;
+    private Long price;
+    private String textSearchVectorized;
+
 }
