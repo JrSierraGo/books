@@ -50,8 +50,9 @@ public class BookEntity {
     private String getTsVector() {
         return Map.of('A', normalizeText(this.title),
                         'B', normalizeText(this.subtitle),
-                        'C', normalizeText(this.authors),
-                        'D', normalizeText(this.description)
+                        'C', normalizeText(this.description),
+                        'D', normalizeText(this.authors)
+
                 )
                 .entrySet()
                 .stream()
