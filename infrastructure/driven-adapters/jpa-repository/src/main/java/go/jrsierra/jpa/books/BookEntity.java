@@ -7,9 +7,9 @@ import org.hibernate.annotations.Type;
 import org.postgresql.util.PGobject;
 
 import java.sql.SQLException;
-import java.util.Objects;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -39,29 +39,38 @@ public class BookEntity {
     @PrePersist
     @PreUpdate
     private void preInsertOrUpdate() throws SQLException {
-        String data = getPlainTextFieldsFromSearch();
 
         PGobject pgo = new PGobject();
         pgo.setType("tsvector");
-        pgo.setValue(toTsvectorFormat(data));
+        pgo.setValue(getTsVector());
 
         this.textSearchVectorized = pgo;
     }
 
-    private String getPlainTextFieldsFromSearch() {
-        return Stream.of(this.title,
-                        this.subtitle,
-                        this.authors,
-                        this.description
+    private String getTsVector() {
+        return Map.of('A', normalizeText(this.title),
+                        'B', normalizeText(this.subtitle),
+                        'C', normalizeText(this.authors),
+                        'D', normalizeText(this.description)
                 )
-                .filter(Objects::nonNull)
-                .map(s -> s.concat(" "))
-                .collect(Collectors.joining())
-                .replace("'", "''");
+                .entrySet()
+                .stream()
+                .map(entry -> setWeight(entry.getValue(), entry.getKey()))
+                .collect(Collectors.joining(" || "));
+    }
+
+    private String normalizeText(String title) {
+        return Optional.ofNullable(title)
+                .map(s -> s.replace("'", "''"))
+                .orElse("");
     }
 
     private String toTsvectorFormat(String data) {
         return String.format("to_tsvector('spanish', '%s') ", data);
+    }
+
+    private String setWeight(String data, Character weight){
+        return String.format("setweight(%s, '%s') ", toTsvectorFormat(data),  weight);
     }
 
 }
