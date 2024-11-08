@@ -11,4 +11,6 @@ public interface BookRepository {
     Mono<Book> save(Book book);
 
     Flux<Book> saveAll(List<Book> books);
+
+    Flux<Book> findBooksByText(String criteria);
 }
